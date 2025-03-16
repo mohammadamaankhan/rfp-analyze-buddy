@@ -14,7 +14,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, showNav = true }) => {
       <main className="flex-grow flex flex-col px-4 py-6 md:px-8 md:py-12 max-w-7xl mx-auto w-full">
         {children}
       </main>
-      <footer className="py-4 text-center text-sm text-muted-foreground">
+      <footer className="py-4 text-center text-sm text-muted-foreground border-t border-orange-100">
         <p>© {new Date().getFullYear()} Unirail RFP Analyzer</p>
       </footer>
     </div>

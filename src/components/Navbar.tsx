@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Upload, LogOut } from 'lucide-react';
+import { FileText, Upload, LogOut, Settings, MessageSquare } from 'lucide-react';
 
 interface NavItem {
   label: string;
@@ -14,26 +14,36 @@ export const Navbar: React.FC = () => {
 
   const navItems: NavItem[] = [
     {
+      label: 'Dashboard',
+      path: '/results',
+      icon: <FileText className="w-5 h-5" />,
+    },
+    {
       label: 'Upload',
       path: '/upload',
       icon: <Upload className="w-5 h-5" />,
     },
     {
-      label: 'Results',
-      path: '/results',
-      icon: <FileText className="w-5 h-5" />,
+      label: 'Chat',
+      path: '/chat',
+      icon: <MessageSquare className="w-5 h-5" />,
+    },
+    {
+      label: 'Settings',
+      path: '/settings',
+      icon: <Settings className="w-5 h-5" />,
     },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-orange-100 bg-white shadow-sm">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
             <div className="rounded-full bg-primary p-1">
               <FileText className="h-5 w-5 text-white" />
             </div>
-            <span className="font-medium text-xl hidden md:inline-block">RFP Analyzer</span>
+            <span className="font-medium text-xl hidden md:inline-block">Unirail</span>
           </Link>
         </div>
 
@@ -43,13 +53,13 @@ export const Navbar: React.FC = () => {
             <Link
               key={item.path}
               to={item.path}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
             >
               {item.icon}
               <span>{item.label}</span>
             </Link>
           ))}
-          <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+          <button className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
             <LogOut className="w-5 h-5" />
             <span>Sign Out</span>
           </button>
@@ -57,7 +67,7 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile menu button */}
         <button 
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-md hover:bg-secondary transition-colors"
+          className="md:hidden flex items-center justify-center w-10 h-10 rounded-md hover:bg-orange-50 transition-colors"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <svg 
@@ -82,20 +92,20 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden p-4 border-t border-border/50 animate-fade-in">
+        <div className="md:hidden p-4 border-t border-orange-100 animate-fade-in bg-white">
           <nav className="flex flex-col space-y-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className="flex items-center gap-2 p-2 rounded-md hover:bg-secondary transition-colors"
+                className="flex items-center gap-2 p-2 rounded-md hover:bg-orange-50 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.icon}
                 <span>{item.label}</span>
               </Link>
             ))}
-            <button className="flex items-center gap-2 p-2 rounded-md hover:bg-secondary transition-colors">
+            <button className="flex items-center gap-2 p-2 rounded-md hover:bg-orange-50 transition-colors">
               <LogOut className="w-5 h-5" />
               <span>Sign Out</span>
             </button>

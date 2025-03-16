@@ -7,35 +7,35 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 210 40% 10%;
+    --background: 30 33% 98%;
+    --foreground: 24 10% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 40% 10%;
+    --card-foreground: 24 10% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 40% 10%;
+    --popover-foreground: 24 10% 10%;
 
-    --primary: 210 100% 50%;
+    --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 10% 90%;
-    --secondary-foreground: 210 40% 10%;
+    --secondary: 24 30% 95%;
+    --secondary-foreground: 24 40% 20%;
 
-    --muted: 210 10% 90%;
-    --muted-foreground: 210 20% 40%;
+    --muted: 24 20% 95%;
+    --muted-foreground: 24 10% 40%;
 
-    --accent: 210 10% 90%;
-    --accent-foreground: 210 40% 10%;
+    --accent: 24 30% 90%;
+    --accent-foreground: 24 40% 20%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 24 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 210 100% 50%;
+    --border: 24 20% 90%;
+    --input: 24 20% 90%;
+    --ring: 24 95% 53%;
 
-    --radius: 0.8rem;
+    --radius: 0.5rem;
   }
 
   * {
@@ -77,12 +77,12 @@
   }
   
   .glass-card {
-    @apply bg-white/60 backdrop-blur-lg border border-white/20 shadow-md rounded-xl;
+    @apply bg-white/60 backdrop-blur-lg border border-orange-100 shadow-md rounded-xl;
   }
   
   .glass-button {
-    @apply bg-primary/90 backdrop-blur-md text-white font-medium px-6 py-3 rounded-full shadow-sm
-    hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50;
+    @apply bg-primary text-white font-medium px-6 py-3 rounded-md shadow-sm
+    hover:bg-primary/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50;
   }
   
   .subtle-input {
@@ -91,8 +91,8 @@
   }
   
   .upload-zone {
-    @apply border-2 border-dashed border-secondary rounded-xl p-8 transition-all
-    hover:border-primary/40 focus:outline-none focus:border-primary/40;
+    @apply border-2 border-dashed border-orange-200 rounded-xl p-8 transition-all
+    hover:border-primary/60 focus:outline-none focus:border-primary/60 bg-orange-50/50;
   }
   
   .page-transition {

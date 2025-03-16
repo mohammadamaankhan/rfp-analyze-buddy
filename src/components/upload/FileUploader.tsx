@@ -39,9 +39,9 @@ export const FileUploader: React.FC = () => {
       return false;
     }
     
-    // Check file size (10MB limit)
-    if (file.size > 10 * 1024 * 1024) {
-      setErrorMessage('File size must be less than 10MB');
+    // Check file size (100MB limit)
+    if (file.size > 100 * 1024 * 1024) {
+      setErrorMessage('File size must be less than 100MB');
       return false;
     }
     
@@ -133,7 +133,7 @@ export const FileUploader: React.FC = () => {
       <div
         className={`upload-zone flex flex-col items-center justify-center text-center cursor-pointer ${
           isDragging ? 'border-primary' : ''
-        } ${file ? 'bg-secondary/30' : ''}`}
+        } ${file ? 'bg-orange-50' : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -149,12 +149,12 @@ export const FileUploader: React.FC = () => {
         
         {!file ? (
           <>
-            <div className="rounded-full bg-secondary p-4 mb-4">
+            <div className="rounded-full bg-orange-100 p-4 mb-4">
               <Upload className="h-6 w-6 text-primary" />
             </div>
             <h3 className="text-lg font-medium mb-2">Drag & Drop or Click to Upload</h3>
             <p className="text-muted-foreground mb-2">
-              Support for PDF, PNG, JPG, JPEG (Max 10MB)
+              Support for PDF, PNG, JPG, JPEG (Max 100MB)
             </p>
           </>
         ) : (
@@ -175,7 +175,7 @@ export const FileUploader: React.FC = () => {
         {file && (
           <button
             onClick={resetForm}
-            className="px-6 py-3 border border-border rounded-full text-foreground hover:bg-secondary/50 transition-colors"
+            className="px-6 py-3 border border-orange-200 rounded-md text-foreground hover:bg-orange-50 transition-colors"
           >
             Remove File
           </button>
