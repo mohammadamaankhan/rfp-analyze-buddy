@@ -42,15 +42,15 @@ export const getUserDocuments = async (): Promise<RFPResult[]> => {
       fileName: doc.file_name,
       fileSize: `${(doc.file_size / (1024 * 1024)).toFixed(2)} MB`,
       createdAt: doc.created_at,
-      projectName: analysis.project_name || doc.file_name.split('.')[0],
-      deadline: analysis.deadline || 'Not specified',
-      budget: analysis.budget || 'Not specified',
-      summary: analysis.summary || 'No summary available',
-      requirements: analysis.requirements || [],
-      stakeholders: analysis.stakeholders || [],
-      evaluationCriteria: analysis.evaluation_criteria || [],
-      submissionInstructions: analysis.submission_instructions || 'Not specified',
-      contactInformation: analysis.contact_information || 'Not specified'
+      projectName: analysis.project_name ?? doc.file_name.split('.')[0],
+      deadline: analysis.deadline ?? 'Not specified',
+      budget: analysis.budget ?? 'Not specified',
+      summary: analysis.summary ?? 'No summary available',
+      requirements: analysis.requirements ?? [],
+      stakeholders: analysis.stakeholders ?? [],
+      evaluationCriteria: analysis.evaluation_criteria ?? [],
+      submissionInstructions: analysis.submission_instructions ?? 'Not specified',
+      contactInformation: analysis.contact_information ?? 'Not specified'
     };
   });
 };
@@ -93,15 +93,15 @@ export const getDocumentById = async (id: string): Promise<RFPResult> => {
     fileName: data.file_name,
     fileSize: `${(data.file_size / (1024 * 1024)).toFixed(2)} MB`,
     createdAt: data.created_at,
-    projectName: analysis.project_name || data.file_name.split('.')[0],
-    deadline: analysis.deadline || 'Not specified',
-    budget: analysis.budget || 'Not specified',
-    summary: analysis.summary || 'No summary available',
-    requirements: analysis.requirements || [],
-    stakeholders: analysis.stakeholders || [],
-    evaluationCriteria: analysis.evaluation_criteria || [],
-    submissionInstructions: analysis.submission_instructions || 'Not specified',
-    contactInformation: analysis.contact_information || 'Not specified'
+    projectName: analysis.project_name ?? data.file_name.split('.')[0],
+    deadline: analysis.deadline ?? 'Not specified',
+    budget: analysis.budget ?? 'Not specified',
+    summary: analysis.summary ?? 'No summary available',
+    requirements: analysis.requirements ?? [],
+    stakeholders: analysis.stakeholders ?? [],
+    evaluationCriteria: analysis.evaluation_criteria ?? [],
+    submissionInstructions: analysis.submission_instructions ?? 'Not specified',
+    contactInformation: analysis.contact_information ?? 'Not specified'
   };
 };
 
