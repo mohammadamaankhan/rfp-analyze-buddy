@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Upload, LogOut, Settings, MessageSquare } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 interface NavItem {
   label: string;
