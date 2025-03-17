@@ -9,7 +9,130 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      document_analyses: {
+        Row: {
+          budget: string | null
+          contact_information: string | null
+          created_at: string
+          deadline: string | null
+          document_id: string
+          evaluation_criteria: Json | null
+          id: string
+          project_name: string | null
+          requirements: Json | null
+          stakeholders: Json | null
+          submission_instructions: string | null
+          summary: string | null
+          user_id: string
+        }
+        Insert: {
+          budget?: string | null
+          contact_information?: string | null
+          created_at?: string
+          deadline?: string | null
+          document_id: string
+          evaluation_criteria?: Json | null
+          id?: string
+          project_name?: string | null
+          requirements?: Json | null
+          stakeholders?: Json | null
+          submission_instructions?: string | null
+          summary?: string | null
+          user_id: string
+        }
+        Update: {
+          budget?: string | null
+          contact_information?: string | null
+          created_at?: string
+          deadline?: string | null
+          document_id?: string
+          evaluation_criteria?: Json | null
+          id?: string
+          project_name?: string | null
+          requirements?: Json | null
+          stakeholders?: Json | null
+          submission_instructions?: string | null
+          summary?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_analyses_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_chats: {
+        Row: {
+          created_at: string
+          document_id: string
+          id: string
+          is_user: boolean
+          message: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_id: string
+          id?: string
+          is_user?: boolean
+          message: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_id?: string
+          id?: string
+          is_user?: boolean
+          message?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_chats_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

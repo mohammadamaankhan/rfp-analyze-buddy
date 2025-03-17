@@ -3,6 +3,9 @@ import React, { useState, useRef } from 'react';
 import { Upload, File } from 'lucide-react';
 import { ProcessingIndicator } from './ProcessingIndicator';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 export const FileUploader: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -12,6 +15,7 @@ export const FileUploader: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const allowedTypes = [
     'application/pdf', 
@@ -77,32 +81,80 @@ export const FileUploader: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!file) {
+    if (!file || !user) {
       setErrorMessage('Please select a file to upload');
       return;
     }
 
     setIsProcessing(true);
     
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        const newProgress = prev + 5;
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          
-          // Simulate processing time after upload completes
-          setTimeout(() => {
-            setIsProcessing(false);
-            // Navigate to results page after processing
-            navigate('/document/123');
-          }, 2000);
-          
-          return 100;
-        }
-        return newProgress;
-      });
-    }, 200);
+    try {
+      // Create a unique file path
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      // Simulate upload progress
+      const interval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 95) {
+            clearInterval(interval);
+            return 95;
+          }
+          return prev + 5;
+        });
+      }, 200);
+      
+      // Upload file to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('documents')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+      
+      if (uploadError) {
+        throw uploadError;
+      }
+      
+      // Get the public URL of the uploaded file
+      const { data: { publicUrl } } = supabase.storage
+        .from('documents')
+        .getPublicUrl(filePath);
+      
+      // Store document metadata in the database
+      const { data: document, error: insertError } = await supabase
+        .from('documents')
+        .insert({
+          user_id: user.id,
+          file_name: file.name,
+          file_path: filePath,
+          file_size: file.size,
+          file_type: file.type
+        })
+        .select()
+        .single();
+      
+      if (insertError) {
+        throw insertError;
+      }
+      
+      clearInterval(interval);
+      setUploadProgress(100);
+      
+      // Simulate processing time
+      setTimeout(() => {
+        setIsProcessing(false);
+        toast.success('Document uploaded successfully');
+        // Navigate to document page
+        navigate(`/document/${document.id}`);
+      }, 1000);
+      
+    } catch (error: any) {
+      console.error('Error uploading document:', error.message);
+      toast.error('Failed to upload document. Please try again.');
+      setIsProcessing(false);
+      setUploadProgress(0);
+    }
   };
 
   const resetForm = () => {
