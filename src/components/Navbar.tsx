@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Upload, LogOut, Settings, MessageSquare } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from '@/components/ui/sonner';
 
 interface NavItem {
   label: string;
@@ -11,6 +13,19 @@ interface NavItem {
 
 export const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast.success('Signed out successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast.error('Failed to sign out. Please try again.');
+    }
+  };
 
   const navItems: NavItem[] = [
     {
@@ -59,7 +74,10 @@ export const Navbar: React.FC = () => {
               <span>{item.label}</span>
             </Link>
           ))}
-          <button className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+          <button 
+            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+            onClick={handleSignOut}
+          >
             <LogOut className="w-5 h-5" />
             <span>Sign Out</span>
           </button>
@@ -105,7 +123,10 @@ export const Navbar: React.FC = () => {
                 <span>{item.label}</span>
               </Link>
             ))}
-            <button className="flex items-center gap-2 p-2 rounded-md hover:bg-orange-50 transition-colors">
+            <button 
+              className="flex items-center gap-2 p-2 rounded-md hover:bg-orange-50 transition-colors"
+              onClick={handleSignOut}
+            >
               <LogOut className="w-5 h-5" />
               <span>Sign Out</span>
             </button>

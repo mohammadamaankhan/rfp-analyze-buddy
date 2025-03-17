@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { ResultsDisplay } from '../components/results/ResultsDisplay';
@@ -8,15 +8,6 @@ import { getMockResult } from '../utils/api';
 const DocumentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Check if user is authenticated
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    if (!isAuthenticated) {
-      navigate('/');
-      return;
-    }
-  }, [navigate]);
   
   const result = id ? getMockResult(id) : undefined;
   

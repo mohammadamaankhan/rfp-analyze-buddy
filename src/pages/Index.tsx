@@ -3,17 +3,28 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { AuthForm } from '../components/auth/AuthForm';
+import { useAuth } from '@/context/AuthContext';
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
   
   useEffect(() => {
-    // Check if user is already authenticated
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    if (isAuthenticated) {
+    if (user && !loading) {
       navigate('/upload');
     }
-  }, [navigate]);
+  }, [navigate, user, loading]);
+
+  if (loading) {
+    return (
+      <Layout showNav={false}>
+        <div className="flex-grow flex flex-col items-center justify-center">
+          <div className="h-12 w-12 rounded-full border-4 border-primary/30 border-t-primary animate-spin"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout showNav={false}>

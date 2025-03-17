@@ -1,6 +1,9 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/sonner';
 
 export const AuthForm: React.FC = () => {
   const navigate = useNavigate();
@@ -9,13 +12,24 @@ export const AuthForm: React.FC = () => {
   const handleLogin = async () => {
     setIsLoading(true);
     
-    // Simulate authentication (in a real app, this would use NextAuth/Google)
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/upload`,
+        },
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      // The redirect will happen automatically after successful authentication
+    } catch (error: any) {
+      console.error('Error signing in:', error.message);
+      toast.error('Failed to sign in. Please try again.');
       setIsLoading(false);
-      // Mock successful login
-      localStorage.setItem('isAuthenticated', 'true');
-      navigate('/upload');
-    }, 1500);
+    }
   };
 
   return (
@@ -69,9 +83,10 @@ export const AuthForm: React.FC = () => {
           Access the Unirail RFP analysis tool to extract and analyze information from your documents.
         </p>
         
-        <button
+        <Button
           onClick={handleLogin}
           disabled={isLoading}
+          variant="outline"
           className="w-full flex items-center justify-center gap-2 bg-white border border-border rounded-lg px-4 py-3 shadow-sm hover:shadow transition-all duration-200 relative overflow-hidden"
         >
           {!isLoading && (
@@ -107,7 +122,7 @@ export const AuthForm: React.FC = () => {
               <span>Signing in...</span>
             </div>
           )}
-        </button>
+        </Button>
         
         <p className="text-xs text-muted-foreground">
           By signing in, you agree to our Terms of Service and Privacy Policy.
