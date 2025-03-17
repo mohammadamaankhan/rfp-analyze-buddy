@@ -1,7 +1,7 @@
-
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { supabaseClient } from '@/lib/supabase';
 
 interface AuthRouteProps {
   children: React.ReactNode;
@@ -9,6 +9,18 @@ interface AuthRouteProps {
 
 const AuthRoute: React.FC<AuthRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user }, error } = await supabaseClient.auth.getUser();
+      if (error || !user) {
+        navigate('/login');
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
   
   if (loading) {
     return (
