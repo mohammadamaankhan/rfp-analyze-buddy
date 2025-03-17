@@ -1,13 +1,15 @@
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
-import { getMockResults } from '../utils/api';
+import { getMockResults, useUserDocuments } from '../utils/api';
 import { FileText, ArrowRight, Calendar, DollarSign } from 'lucide-react';
+import { RFPResult } from '../utils/types';
 
 const Results: React.FC = () => {
   const navigate = useNavigate();
-  const results = getMockResults();
+  const [results, setResults] = useState<RFPResult[]>([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     // Check if user is authenticated
@@ -16,6 +18,21 @@ const Results: React.FC = () => {
       navigate('/');
       return;
     }
+    
+    // Fetch results
+    const fetchResults = async () => {
+      try {
+        const data = await getMockResults();
+        setResults(data);
+      } catch (error) {
+        console.error('Failed to fetch results:', error);
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchResults();
   }, [navigate]);
   
   return (
@@ -31,7 +48,11 @@ const Results: React.FC = () => {
           </p>
         </div>
         
-        {results.length === 0 ? (
+        {loading ? (
+          <div className="glass-card p-8 text-center">
+            <h3 className="text-xl font-semibold mb-2">Loading documents...</h3>
+          </div>
+        ) : results.length === 0 ? (
           <div className="glass-card p-8 text-center">
             <div className="rounded-full bg-secondary p-4 inline-flex mb-4">
               <FileText className="h-6 w-6 text-muted-foreground" />

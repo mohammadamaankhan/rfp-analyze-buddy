@@ -1,9 +1,10 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { RFPResult } from './types';
+import { useQuery } from '@tanstack/react-query';
 
 // Function to fetch document results for the current user
-export const getUserDocuments = async () => {
+export const getUserDocuments = async (): Promise<RFPResult[]> => {
   const { data, error } = await supabase
     .from('documents')
     .select(`
@@ -55,7 +56,7 @@ export const getUserDocuments = async () => {
 };
 
 // Function to fetch a specific document by ID
-export const getDocumentById = async (id: string) => {
+export const getDocumentById = async (id: string): Promise<RFPResult> => {
   const { data, error } = await supabase
     .from('documents')
     .select(`
@@ -102,6 +103,23 @@ export const getDocumentById = async (id: string) => {
     submissionInstructions: analysis.submission_instructions || 'Not specified',
     contactInformation: analysis.contact_information || 'Not specified'
   };
+};
+
+// Hook to fetch documents with React Query
+export const useUserDocuments = () => {
+  return useQuery({
+    queryKey: ['documents'],
+    queryFn: getUserDocuments
+  });
+};
+
+// Hook to fetch a specific document with React Query
+export const useDocument = (id: string) => {
+  return useQuery({
+    queryKey: ['document', id],
+    queryFn: () => getDocumentById(id),
+    enabled: !!id
+  });
 };
 
 // Mock data for demonstration purposes (fallback)
