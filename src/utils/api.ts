@@ -1,6 +1,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { RFPResult } from './types';
+import { RFPResult, Document, DocumentAnalysis } from './types';
 import { useQuery } from '@tanstack/react-query';
 
 // Function to fetch document results for the current user
@@ -33,9 +33,21 @@ export const getUserDocuments = async (): Promise<RFPResult[]> => {
     throw error;
   }
 
-  // Convert the data to the expected format
-  return data.map(doc => {
-    const analysis = doc.document_analyses?.[0] || {};
+  // Convert the data to the expected format with proper typing
+  return (data as Document[]).map(doc => {
+    // Safely access the first analysis with proper typing
+    const analysis: DocumentAnalysis = doc.document_analyses?.[0] || {
+      id: '',
+      project_name: null,
+      deadline: null,
+      budget: null,
+      summary: null,
+      requirements: null,
+      stakeholders: null,
+      evaluation_criteria: null,
+      submission_instructions: null,
+      contact_information: null
+    };
     
     return {
       id: doc.id,
@@ -86,7 +98,19 @@ export const getDocumentById = async (id: string): Promise<RFPResult> => {
     throw error;
   }
 
-  const analysis = data.document_analyses?.[0] || {};
+  // Safely access the first analysis with proper typing
+  const analysis: DocumentAnalysis = (data as Document).document_analyses?.[0] || {
+    id: '',
+    project_name: null,
+    deadline: null,
+    budget: null,
+    summary: null,
+    requirements: null,
+    stakeholders: null,
+    evaluation_criteria: null,
+    submission_instructions: null,
+    contact_information: null
+  };
 
   return {
     id: data.id,
