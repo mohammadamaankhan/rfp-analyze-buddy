@@ -80,6 +80,51 @@ export const FileUploader: React.FC = () => {
     fileInputRef.current?.click();
   };
 
+  const processDocument = async (filePath: string, documentId: string) => {
+    try {
+      // Get the public URL of the uploaded file
+      const { data: { publicUrl } } = supabase.storage
+        .from('documents')
+        .getPublicUrl(filePath);
+
+      // Set upload phase complete
+      setUploadProgress(40);
+      
+      // Call Supabase Edge Function to process the document with Mistral OCR
+      const { data, error } = await supabase.functions.invoke('process-document', {
+        body: { 
+          fileUrl: publicUrl,
+          documentId: documentId,
+          userId: user?.id
+        }
+      });
+
+      if (error) {
+        throw new Error(`Error processing document: ${error.message}`);
+      }
+
+      // Update progress for OCR phase
+      setUploadProgress(70);
+      
+      // Set a timeout to simulate AI analysis phase
+      setTimeout(() => {
+        setUploadProgress(100);
+        
+        // Navigate to document page after a short delay
+        setTimeout(() => {
+          setIsProcessing(false);
+          toast.success('Document analysis complete');
+          navigate(`/document/${documentId}`);
+        }, 1000);
+      }, 2000);
+      
+      return data;
+    } catch (error) {
+      console.error('Error in processDocument:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
     if (!file || !user) {
       setErrorMessage('Please select a file to upload');
@@ -87,18 +132,19 @@ export const FileUploader: React.FC = () => {
     }
 
     setIsProcessing(true);
+    setUploadProgress(0);
     
     try {
       // Create a unique file path
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${Date.now()}.${fileExt}`;
       
-      // Simulate upload progress
+      // Simulate initial upload progress
       const interval = setInterval(() => {
         setUploadProgress(prev => {
-          if (prev >= 95) {
+          if (prev >= 35) {
             clearInterval(interval);
-            return 95;
+            return 35;
           }
           return prev + 5;
         });
@@ -115,11 +161,6 @@ export const FileUploader: React.FC = () => {
       if (uploadError) {
         throw uploadError;
       }
-      
-      // Get the public URL of the uploaded file
-      const { data: { publicUrl } } = supabase.storage
-        .from('documents')
-        .getPublicUrl(filePath);
       
       // Store document metadata in the database
       const { data: document, error: insertError } = await supabase
@@ -139,15 +180,9 @@ export const FileUploader: React.FC = () => {
       }
       
       clearInterval(interval);
-      setUploadProgress(100);
       
-      // Simulate processing time
-      setTimeout(() => {
-        setIsProcessing(false);
-        toast.success('Document uploaded successfully');
-        // Navigate to document page
-        navigate(`/document/${document.id}`);
-      }, 1000);
+      // Process the document with OCR
+      await processDocument(filePath, document.id);
       
     } catch (error: any) {
       console.error('Error uploading document:', error.message);
