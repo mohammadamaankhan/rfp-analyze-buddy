@@ -3,9 +3,6 @@ import React, { useState, useRef } from 'react';
 import { Upload, File } from 'lucide-react';
 import { ProcessingIndicator } from './ProcessingIndicator';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner';
 
 export const FileUploader: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -15,7 +12,6 @@ export const FileUploader: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const allowedTypes = [
     'application/pdf', 
@@ -80,116 +76,33 @@ export const FileUploader: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  const processDocument = async (filePath: string, documentId: string) => {
-    try {
-      // Get the public URL of the uploaded file
-      const { data: { publicUrl } } = supabase.storage
-        .from('documents')
-        .getPublicUrl(filePath);
-
-      // Set upload phase complete
-      setUploadProgress(40);
-      
-      // Call Supabase Edge Function to process the document with Mistral OCR
-      const { data, error } = await supabase.functions.invoke('process-document', {
-        body: { 
-          fileUrl: publicUrl,
-          documentId: documentId,
-          userId: user?.id
-        }
-      });
-
-      if (error) {
-        throw new Error(`Error processing document: ${error.message}`);
-      }
-
-      // Update progress for OCR phase
-      setUploadProgress(70);
-      
-      // Set a timeout to simulate AI analysis phase
-      setTimeout(() => {
-        setUploadProgress(100);
-        
-        // Navigate to document page after a short delay
-        setTimeout(() => {
-          setIsProcessing(false);
-          toast.success('Document analysis complete');
-          navigate(`/document/${documentId}`);
-        }, 1000);
-      }, 2000);
-      
-      return data;
-    } catch (error) {
-      console.error('Error in processDocument:', error);
-      throw error;
-    }
-  };
-
   const handleSubmit = async () => {
-    if (!file || !user) {
+    if (!file) {
       setErrorMessage('Please select a file to upload');
       return;
     }
 
     setIsProcessing(true);
-    setUploadProgress(0);
     
-    try {
-      // Create a unique file path
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
-      
-      // Simulate initial upload progress
-      const interval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 35) {
-            clearInterval(interval);
-            return 35;
-          }
-          return prev + 5;
-        });
-      }, 200);
-      
-      // Upload file to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('documents')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false,
-        });
-      
-      if (uploadError) {
-        throw uploadError;
-      }
-      
-      // Store document metadata in the database
-      const { data: document, error: insertError } = await supabase
-        .from('documents')
-        .insert({
-          user_id: user.id,
-          file_name: file.name,
-          file_path: filePath,
-          file_size: file.size,
-          file_type: file.type
-        })
-        .select()
-        .single();
-      
-      if (insertError) {
-        throw insertError;
-      }
-      
-      clearInterval(interval);
-      
-      // Process the document with OCR
-      await processDocument(filePath, document.id);
-      
-    } catch (error: any) {
-      console.error('Error uploading document:', error.message);
-      toast.error('Failed to upload document. Please try again.');
-      setIsProcessing(false);
-      setUploadProgress(0);
-    }
+    // Simulate upload progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        const newProgress = prev + 5;
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          
+          // Simulate processing time after upload completes
+          setTimeout(() => {
+            setIsProcessing(false);
+            // Navigate to results page after processing
+            navigate('/document/123');
+          }, 2000);
+          
+          return 100;
+        }
+        return newProgress;
+      });
+    }, 200);
   };
 
   const resetForm = () => {

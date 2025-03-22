@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Upload, LogOut, Settings, MessageSquare } from 'lucide-react';
@@ -28,8 +29,8 @@ export const Navbar: React.FC = () => {
 
   const navItems: NavItem[] = [
     {
-      label: 'History',
-      path: '/history',
+      label: 'Dashboard',
+      path: '/results',
       icon: <FileText className="w-5 h-5" />,
     },
     {

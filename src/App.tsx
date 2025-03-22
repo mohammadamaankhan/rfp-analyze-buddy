@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,7 +11,6 @@ import Results from "./pages/Results";
 import DocumentPage from "./pages/DocumentPage";
 import NotFound from "./pages/NotFound";
 import AuthRoute from "./components/auth/AuthRoute";
-import History from "./pages/History";
 
 const queryClient = new QueryClient();
 
@@ -23,11 +23,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/history" element={
-              <AuthRoute>
-                <History />
-              </AuthRoute>
-            } />
             <Route path="/upload" element={
               <AuthRoute>
                 <Upload />
