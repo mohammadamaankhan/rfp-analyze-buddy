@@ -1,9 +1,21 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { FileUploader } from '../components/upload/FileUploader';
 
 const Upload: React.FC = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check if user is authenticated
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (!isAuthenticated) {
+      navigate('/');
+      return;
+    }
+  }, [navigate]);
+  
   return (
     <Layout>
       <div className="max-w-screen-lg mx-auto py-6">
